@@ -26,5 +26,19 @@ aux_links_new_tab: false
 back_to_top: true
 back_to_top_text: "Back to top"
 
+nav_external_links:
+  - title: 几何节点中文字典
+    url: https://blendercz.top/
+    hide_icon: false # set to true to hide the external link icon - defaults to false
+    opens_in_new_tab: false # set to true to open this link in a new tab - defaults to false
+  - title: Blender 官方文档
+    url: https://docs.blender.org/manual/zh-hans/latest/
+    hide_icon: false # set to true to hide the external link icon - defaults to false
+    opens_in_new_tab: false # set to true to open this link in a new tab - defaults to false
+  - title: 月离文档库
+    url: https://docs.yuelili.com/#/
+    hide_icon: false # set to true to hide the external link icon - defaults to false
+    opens_in_new_tab: false # set to true to open this link in a new tab - defaults to false
+
 
 

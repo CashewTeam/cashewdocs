@@ -1,7 +1,7 @@
 ---
 title: Blender 4.2 拓展推荐
 date: 2024-10-01 16:00:00 +800
-parent: Blender
+parent: Blender 资源推荐
 
 ---
 

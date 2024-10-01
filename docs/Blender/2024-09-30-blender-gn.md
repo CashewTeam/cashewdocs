@@ -1,7 +1,7 @@
 ---
 title: Blender 几何节点资产推荐
 date: 2024-10-01 18:00:00 +800
-parent: Blender
+parent: Blender 资源推荐
 
 ---
 

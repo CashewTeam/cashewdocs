@@ -1,5 +1,5 @@
 ---
-title: Home
+title: 主页
 layout: home
 nav_order: 1
 ---

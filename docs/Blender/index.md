@@ -1,6 +1,7 @@
 ---
 title: Blender
 date: 2024-09-29 20:50:00 +800
+parent: Home
 nav_order: 3
 ---
 

@@ -27,9 +27,4 @@ back_to_top: true
 back_to_top_text: "Back to top"
 
 
-plugins:
-  - jekyll-seo-tag
-  - jekyll-github-metadata
-  - jekyll-include-cache
-  - jekyll-sitemap
 

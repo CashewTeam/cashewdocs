@@ -1,5 +1,5 @@
 ---
-title: Blender 文档导航
+title: Blender
 date: 2024-09-29 20:50:00 +800
 nav_order: 3
 ---

@@ -1,13 +1,8 @@
 ---
 title: Blender 几何节点资产推荐
 date: 2024-10-01 18:00:00 +800
-categories: [Blender, Blender文档]
-tags: [Blender, 文档, 几何节点, 插件]     # TAG names should always be lowercase
-description: Blender geometry nodes assets recommendation.
-pin: false
-image:
-  path: /assets/image/posts/blender/cashewnodes.png
-  alt: Blender Extensions
+parent: Blender
+
 ---
 
 使用几何节点资产可以减少许多重复造轮子的操作，提高使用几何节点的操作效率，下面是一些几何节点资产推荐。<br />

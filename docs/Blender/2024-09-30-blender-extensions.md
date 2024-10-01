@@ -1,13 +1,8 @@
 ---
 title: Blender 4.2 拓展推荐
 date: 2024-10-01 16:00:00 +800
-categories: [Blender, Blender文档]
-tags: [Blender, 文档, 几何节点, 插件]     # TAG names should always be lowercase
-description: Blender extensions recommendation.
-pin: false
-image:
-  path: /assets/image/posts/blender/4.2splash.jpg
-  alt: Blender Extensions
+parent: Blender
+
 ---
 
 4.2 LTS 更新后官方的拓展市场取代了之前的自带插件，第三方插件目前是新旧两套系统共存的状态，这里汇总了一些实用的拓展，都可以在 Blender 的拓展面板一键安装，一些第三方的插件推荐在[另一篇文章](https://www.cashewteam.top/posts/blender-plugins/)。<br />

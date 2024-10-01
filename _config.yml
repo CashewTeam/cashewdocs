@@ -1,6 +1,8 @@
 title: 腰果文档库
 description: 正在建设中~~~
 theme: just-the-docs
+# Color scheme supports "light" (default) and "dark"
+color_scheme: dark
 
 url: https://docs.cashewteam.top
 

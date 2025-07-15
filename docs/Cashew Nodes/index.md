@@ -18,15 +18,15 @@ Cashew Nodes（原B4D）是由Con幺幺制作的一个 Blender 节点组资产�
 
 ## 安装
 
-将ZIP文件拖入到Blender中安装即可；
-3.6不支持拖拽，需要手动在偏好设置-插件面板安装；
+4.2+将ZIP文件拖入到Blender中安装即可；  
+3.6不支持拖拽，需要手动在偏好设置-插件面板安装；  
 如果Blender版本升级，需要重新加载一次插件，确保资产加载目录是当前Blender的插件所在目录。
 
 ## 版本说明
 
-v1.2 用于Blender 4.5
-Beta 1.1.2 用于Blender 4.2（停止维护，仅Bug修复）
-Alpha 1.0 用于Blender 3.6 和 Goo Engine 3.6（停止维护，仅Bug修复）
+v1.2 用于Blender 4.5  
+Beta 1.1.2 用于Blender 4.2（停止维护，仅Bug修复）  
+Alpha 1.0 用于Blender 3.6 和 Goo Engine 3.6（停止维护，仅Bug修复）  
 
 ## 其他
 

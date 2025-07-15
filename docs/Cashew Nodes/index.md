@@ -5,7 +5,8 @@ nav_order: 5
 ---
 
 # Cashew Nodes 腰果节点组
-Cashew Nodes（原B4D）是由我制作的一个 Blender 节点组资产库，旨在补充和拓展 Blender 的功能，简化几何节点的操作，提高用户使用 Blender 制作动态图形和卡通渲染的效率。<br />
+Cashew Nodes（原B4D）是由Con幺幺制作的一个 Blender 节点组资产库，旨在补充和拓展 Blender 的功能，简化几何节点的操作，提高用户使用 Blender 制作动态图形和卡通渲染的效率。<br />
+部分节点来自其他几何节点作者：ETK、T3D、峰峰居士、Higgsas等。
 ## 链接
 [介绍视频](https://www.bilibili.com/video/BV1gg4y1X7aU/)<br />
 下载：<br />

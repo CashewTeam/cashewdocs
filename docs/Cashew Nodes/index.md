@@ -11,5 +11,9 @@ Cashew Nodes（原B4D）是由我制作的一个 Blender 节点组资产库，�
 下载：<br />
 <https://pan.quark.cn/s/7ca7b6780a54><br />
 
+## 版本说明
+v1.2 用于Blender 4.5
+Beta 1.1.2 用于Blender 4.2（停止维护，仅Bug修复）
+Alpha 1.0 用于Blender 3.6 和 Goo Engine 3.6（停止维护，仅Bug修复）
 
-文档准备编写中
+文档编写中

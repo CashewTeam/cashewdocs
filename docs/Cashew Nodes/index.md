@@ -14,7 +14,8 @@ Cashew Nodes（原B4D）是由Con幺幺制作的一个 Blender 节点组资产�
 
 ## 下载
 
-[https://pan.quark.cn/s/7ca7b6780a54](https://pan.quark.cn/s/7ca7b6780a54)<br />
+[网盘](https://pan.quark.cn/s/7ca7b6780a54)<br />
+[GitHub](https://github.com/CashewTeam/Cashew-Nodes)
 
 ## 安装
 

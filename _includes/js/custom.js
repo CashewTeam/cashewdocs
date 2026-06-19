@@ -10,9 +10,36 @@
   var origTrimmer = lunr.trimmer;
   var origStopWordFilter = lunr.stopWordFilter;
   var origStemmer = lunr.stemmer;
+  var origAdd = lunr.Builder.prototype.add;
 
   function hasCjk(str) {
     return cjkRe.test(str);
+  }
+
+  function tokenizeCjkRun(tokens, str, allowUnigrams, offset, indexState) {
+    if (str.length === 1) {
+      tokens.push(new lunr.Token(str, {
+        position: [offset, 1],
+        index: indexState.value++
+      }));
+      return;
+    }
+
+    for (var i = 0; i < str.length - 1; i++) {
+      tokens.push(new lunr.Token(str.substring(i, i + 2), {
+        position: [offset + i, 2],
+        index: indexState.value++
+      }));
+    }
+
+    if (!allowUnigrams) return;
+
+    for (var j = 0; j < str.length; j++) {
+      tokens.push(new lunr.Token(str[j], {
+        position: [offset + j, 1],
+        index: indexState.value++
+      }));
+    }
   }
 
   function wrapPipeline(fn, label) {
@@ -25,6 +52,17 @@
     return wrapped;
   }
 
+  lunr.__cashewIndexing = false;
+  lunr.Builder.prototype.add = function(doc, attributes) {
+    lunr.__cashewIndexing = true;
+
+    try {
+      return origAdd.call(this, doc, attributes);
+    } finally {
+      lunr.__cashewIndexing = false;
+    }
+  };
+
   lunr.tokenizer = function(obj, metadata) {
     if (obj == null || obj == undefined) return [];
     if (Array.isArray(obj)) return origTokenizer(obj, metadata);
@@ -32,8 +70,12 @@
     var str = obj.toString().toLowerCase();
     if (!hasCjk(str)) return origTokenizer(obj, metadata);
 
+    // Keep unigram tokens while indexing so single-character search still works.
+    // During user queries we prefer non-overlapping bigrams for multi-char input,
+    // which prevents repeated highlights like "结果结果结果" in result previews.
+    var allowUnigrams = lunr.__cashewIndexing || str.length === 1;
     var tokens = [];
-    var idx = 0;
+    var indexState = { value: 0 };
     var latin = '';
     var sepRe = /[\s\-/]+/;
 
@@ -54,17 +96,18 @@
       if (cjkRe.test(ch)) {
         flushLatin();
 
-        if (i + 1 < str.length && cjkRe.test(str[i + 1])) {
-          tokens.push(new lunr.Token(str.substring(i, i + 2), {
-            position: [i, 2],
-            index: idx++
-          }));
+        var runStart = i;
+        while (i + 1 < str.length && cjkRe.test(str[i + 1])) {
+          i++;
         }
 
-        tokens.push(new lunr.Token(ch, {
-          position: [i, 1],
-          index: idx++
-        }));
+        tokenizeCjkRun(
+          tokens,
+          str.substring(runStart, i + 1),
+          allowUnigrams,
+          runStart,
+          indexState
+        );
       } else if (sepRe.test(ch)) {
         flushLatin();
       } else {

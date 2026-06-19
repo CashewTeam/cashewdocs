@@ -24,7 +24,7 @@ aux_links_new_tab: false
 
 # Table of Contents (right sidebar)
 toc: true
-toc_min_level: 2
+toc_min_level: 1
 toc_max_level: 4
 
 # Back to top link

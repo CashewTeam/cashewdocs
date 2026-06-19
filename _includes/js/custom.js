@@ -1,4 +1,11 @@
-(function() {
+// Wait for DOM ready (JS runs in <head> before <body> exists)
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initToc);
+} else {
+  initToc();
+}
+
+function initToc() {
   var tocNav = document.getElementById('toc');
   if (!tocNav) return;
 
@@ -101,4 +108,4 @@
   headings.forEach(function(h) {
     if (h.id) observer.observe(h);
   });
-})();
+}

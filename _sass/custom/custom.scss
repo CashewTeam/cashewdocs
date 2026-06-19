@@ -1,23 +1,15 @@
 // custom SCSS (or CSS) goes here
 
-// TOC sidebar
-.content-with-toc {
-  display: flex;
-  gap: $sp-4;
-
-  .main-content {
-    flex: 1;
-    min-width: 0;
-  }
-}
-
+// TOC sidebar — positioned to the right of content on large screens
 .toc-sidebar {
   display: none;
 
   @include mq(lg) {
     display: block;
+    position: absolute;
+    left: calc(100% + #{$sp-6});
+    top: 0;
     width: 14rem;
-    flex-shrink: 0;
   }
 }
 

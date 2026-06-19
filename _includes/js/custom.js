@@ -125,7 +125,138 @@
   lunr.tokenizer.separator = /[\s\-/]+/;
 })();
 
-// TOC: build table of contents from page headings
+// Search results: collapse overlapping highlighted fragments for CJK queries.
+(function initSearchResultCleanup() {
+  if (typeof jtd !== 'undefined' && jtd.onReady) {
+    jtd.onReady(setupSearchResultCleanup);
+  } else if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupSearchResultCleanup);
+  } else {
+    setupSearchResultCleanup();
+  }
+})();
+
+function setupSearchResultCleanup() {
+  var searchInput = document.getElementById('search-input');
+  var searchResults = document.getElementById('search-results');
+
+  if (!searchInput || !searchResults) return;
+
+  var cjkRe = /[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]/;
+  var normalizing = false;
+
+  function trimOverlap(previous, current) {
+    var maxOverlap = Math.min(previous.length, current.length);
+
+    for (var i = maxOverlap; i > 0; i--) {
+      if (previous.slice(-i) === current.slice(0, i)) {
+        return current.slice(i);
+      }
+    }
+
+    return current;
+  }
+
+  function normalizeHighlightedElement(el) {
+    var query = (searchInput.value || '').trim();
+    if (query.length < 2 || !cjkRe.test(query)) return;
+
+    var segments = [];
+    for (var i = 0; i < el.childNodes.length; i++) {
+      var node = el.childNodes[i];
+
+      if (node.nodeType === Node.TEXT_NODE) {
+        if (node.textContent) {
+          segments.push({ text: node.textContent, highlighted: false });
+        }
+        continue;
+      }
+
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        segments.push({
+          text: node.textContent || '',
+          highlighted: node.classList.contains('search-result-highlight')
+        });
+      }
+    }
+
+    if (segments.length < 2) return;
+
+    var normalized = [];
+    var accumulated = '';
+    var changed = false;
+
+    for (var j = 0; j < segments.length; j++) {
+      var segment = segments[j];
+      var trimmed = accumulated ? trimOverlap(accumulated, segment.text) : segment.text;
+
+      if (trimmed !== segment.text) {
+        changed = true;
+      }
+
+      if (!trimmed) {
+        continue;
+      }
+
+      if (normalized.length && normalized[normalized.length - 1].highlighted === segment.highlighted) {
+        normalized[normalized.length - 1].text += trimmed;
+      } else {
+        normalized.push({
+          text: trimmed,
+          highlighted: segment.highlighted
+        });
+      }
+
+      accumulated += trimmed;
+    }
+
+    if (!changed) return;
+
+    while (el.firstChild) {
+      el.removeChild(el.firstChild);
+    }
+
+    for (var k = 0; k < normalized.length; k++) {
+      var part = normalized[k];
+
+      if (part.highlighted) {
+        var span = document.createElement('span');
+        span.className = 'search-result-highlight';
+        span.textContent = part.text;
+        el.appendChild(span);
+      } else {
+        el.appendChild(document.createTextNode(part.text));
+      }
+    }
+  }
+
+  function normalizeSearchResults() {
+    if (normalizing) return;
+    normalizing = true;
+
+    try {
+      var nodes = searchResults.querySelectorAll(
+        '.search-result-doc-title, .search-result-section, .search-result-preview'
+      );
+
+      for (var i = 0; i < nodes.length; i++) {
+        normalizeHighlightedElement(nodes[i]);
+      }
+    } finally {
+      normalizing = false;
+    }
+  }
+
+  var observer = new MutationObserver(function() {
+    normalizeSearchResults();
+  });
+
+  observer.observe(searchResults, {
+    childList: true,
+    subtree: true
+  });
+}
+
 (function initToc() {
   // Wait for DOM — try theme's onReady, fallback to DOMContentLoaded
   if (typeof jtd !== 'undefined' && jtd.onReady) {

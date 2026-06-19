@@ -40,14 +40,20 @@
     }
 
     if (stack[stack.length - 1].level < level) {
-      var ul = document.createElement('ul');
-      var lastChild = stack[stack.length - 1].el.lastElementChild;
-      if (lastChild && lastChild.tagName === 'LI') {
-        lastChild.appendChild(ul);
+      var parentEl = stack[stack.length - 1].el;
+      var lastLi = parentEl.lastElementChild;
+      var existingUl = lastLi ? lastLi.querySelector(':scope > ul') : null;
+      if (existingUl) {
+        stack.push({ el: existingUl, level: level });
       } else {
-        stack[stack.length - 1].el.appendChild(ul);
+        var ul = document.createElement('ul');
+        if (lastLi && lastLi.tagName === 'LI') {
+          lastLi.appendChild(ul);
+        } else {
+          parentEl.appendChild(ul);
+        }
+        stack.push({ el: ul, level: level });
       }
-      stack.push({ el: ul, level: level });
     }
 
     stack[stack.length - 1].el.appendChild(li);

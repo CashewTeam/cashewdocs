@@ -1,61 +1,84 @@
-// Chinese search: override Lunr tokenizer with CJK bigram support
+// Chinese search: keep Lunr's English behavior, but preserve CJK tokens
+// through both tokenization and the default index/search pipelines.
 (function() {
   if (typeof lunr === 'undefined') return;
+  if (lunr.__cashewCjkPatched) return;
+  lunr.__cashewCjkPatched = true;
 
-  var origTokenizer = lunr.tokenizer;
   var cjkRe = /[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]/;
+  var origTokenizer = lunr.tokenizer;
+  var origTrimmer = lunr.trimmer;
+  var origStopWordFilter = lunr.stopWordFilter;
+  var origStemmer = lunr.stemmer;
+
+  function hasCjk(str) {
+    return cjkRe.test(str);
+  }
+
+  function wrapPipeline(fn, label) {
+    var wrapped = function(token) {
+      var value = token.toString();
+      return hasCjk(value) ? token : fn(token);
+    };
+
+    lunr.Pipeline.registerFunction(wrapped, label);
+    return wrapped;
+  }
 
   lunr.tokenizer = function(obj, metadata) {
     if (obj == null || obj == undefined) return [];
     if (Array.isArray(obj)) return origTokenizer(obj, metadata);
 
     var str = obj.toString().toLowerCase();
-    var len = str.length;
-    if (len === 0) return [];
+    if (!hasCjk(str)) return origTokenizer(obj, metadata);
 
-    // No CJK characters: use original tokenizer (English search untouched)
-    if (!cjkRe.test(str)) return origTokenizer(obj, metadata);
-
-    // Has CJK: custom bigram tokenization
     var tokens = [];
     var idx = 0;
-    var sepRe = lunr.tokenizer.separator || /[\s\-/]+/;
+    var latin = '';
+    var sepRe = /[\s\-/]+/;
 
-    for (var i = 0; i < len; i++) {
+    function flushLatin() {
+      if (!latin) return;
+
+      var latinTokens = origTokenizer(latin, metadata);
+      for (var j = 0; j < latinTokens.length; j++) {
+        tokens.push(latinTokens[j]);
+      }
+
+      latin = '';
+    }
+
+    for (var i = 0; i < str.length; i++) {
       var ch = str[i];
+
       if (cjkRe.test(ch)) {
-        // Bigram (overlapping 2-char)
-        if (i + 1 < len && cjkRe.test(str[i + 1])) {
-          var bm = {};
-          bm.position = [i, 2];
-          bm.index = idx++;
-          tokens.push(new lunr.Token(str.substring(i, i + 2), bm));
+        flushLatin();
+
+        if (i + 1 < str.length && cjkRe.test(str[i + 1])) {
+          tokens.push(new lunr.Token(str.substring(i, i + 2), {
+            position: [i, 2],
+            index: idx++
+          }));
         }
-        // Unigram (single char)
-        var um = {};
-        um.position = [i, 1];
-        um.index = idx++;
-        tokens.push(new lunr.Token(ch, um));
+
+        tokens.push(new lunr.Token(ch, {
+          position: [i, 1],
+          index: idx++
+        }));
       } else if (sepRe.test(ch)) {
-        continue;
+        flushLatin();
       } else {
-        // Non-CJK, non-separator: accumulate word
-        var start = i;
-        while (i + 1 < len && !cjkRe.test(str[i + 1]) && !sepRe.test(str[i + 1])) {
-          i++;
-        }
-        var word = str.substring(start, i + 1);
-        if (word) {
-          var wm = {};
-          wm.position = [start, word.length];
-          wm.index = idx++;
-          tokens.push(new lunr.Token(word, wm));
-        }
+        latin += ch;
       }
     }
+
+    flushLatin();
     return tokens;
   };
 
+  lunr.trimmer = wrapPipeline(origTrimmer, 'cjkTrimmer');
+  lunr.stopWordFilter = wrapPipeline(origStopWordFilter, 'cjkStopWordFilter');
+  lunr.stemmer = wrapPipeline(origStemmer, 'cjkStemmer');
   lunr.tokenizer.separator = /[\s\-/]+/;
 })();
 

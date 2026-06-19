@@ -23,6 +23,8 @@ body {
     display: flex;
     align-items: flex-start;
     gap: $sp-4;
+    max-width: calc(56rem + 14rem + #{$sp-4});
+    margin-right: auto;
   }
 }
 
@@ -32,6 +34,26 @@ body {
     flex: 1 1 56rem;
     min-width: 0;
     max-width: 56rem;
+  }
+}
+
+// The theme centers only "sidebar + default content width".
+// Once we widen the article area and add a right TOC, we need to recenter
+// that whole group, otherwise the visual weight drifts to the right.
+@supports selector(.side-bar:has(+ .main.has-toc)) {
+  .side-bar:has(+ .main.has-toc) {
+    @include mq(lg) {
+      width: calc((100% - (#{$nav-width} + 56rem + 14rem + #{$sp-4})) / 2 + #{$nav-width});
+    }
+  }
+
+  .side-bar:has(+ .main.has-toc) + .main.has-toc {
+    @include mq(lg) {
+      margin-left: Max(
+        #{$nav-width},
+        calc((100% - (#{$nav-width} + 56rem + 14rem + #{$sp-4})) / 2 + #{$nav-width})
+      );
+    }
   }
 }
 

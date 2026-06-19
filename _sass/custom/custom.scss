@@ -1,5 +1,14 @@
 // Custom SCSS — Table of Contents right sidebar
 
+// Body overflow-y: scroll breaks position:sticky on lg screens.
+// The theme sets it to prevent layout shift on mobile, but on desktop
+// it creates a new scrolling container that traps sticky elements.
+body {
+  @include mq(lg) {
+    overflow-y: visible;
+  }
+}
+
 // Widen .main to accommodate TOC on large screens
 .main.has-toc {
   @include mq(lg) {

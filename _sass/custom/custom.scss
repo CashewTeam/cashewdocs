@@ -31,16 +31,18 @@
 
   @include mq(lg) {
     display: block;
+    position: sticky;
+    top: $sp-4;
     width: 14rem;
     flex-shrink: 0;
+    align-self: flex-start;
+    max-height: calc(100vh - #{$sp-10});
+    overflow-y: auto;
   }
 }
 
 .toc-sticky {
-  position: sticky;
-  top: $sp-4;
-  max-height: calc(100vh - #{$sp-10});
-  overflow-y: auto;
+  // inner wrapper, no longer sticky — sticky is on .toc-sidebar
 }
 
 .toc-title {

@@ -108,13 +108,13 @@ function buildToc() {
         if (activeLink) {
           activeLink.classList.add('active');
           // Auto-scroll TOC to keep active link visible
-          var sticky = tocNav.closest('.toc-sticky');
-          if (sticky) {
+          var scroller = tocNav.closest('.toc-sidebar');
+          if (scroller) {
             var top = activeLink.offsetTop;
-            var st = sticky.scrollTop;
-            var sh = sticky.clientHeight;
+            var st = scroller.scrollTop;
+            var sh = scroller.clientHeight;
             if (top < st + 30 || top > st + sh - 30) {
-              sticky.scrollTop = top - sh / 3;
+              scroller.scrollTop = top - sh / 3;
             }
           }
         }

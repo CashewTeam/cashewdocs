@@ -1,3 +1,60 @@
+// Chinese search: custom Lunr tokenizer with bigram support
+(function() {
+  if (typeof lunr === 'undefined') return;
+
+  lunr.tokenizer = function(obj, metadata) {
+    if (obj == null || obj == undefined) return [];
+    if (Array.isArray(obj)) {
+      return obj.map(function(t) {
+        return new lunr.Token(lunr.utils.asString(t).toLowerCase(), lunr.utils.clone(metadata || {}));
+      });
+    }
+
+    var str = obj.toString().toLowerCase();
+    var len = str.length;
+    if (len === 0) return [];
+
+    var tokens = [];
+    var idx = 0;
+    var cjkRe = /[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]/;
+
+    for (var i = 0; i < len; i++) {
+      if (cjkRe.test(str[i])) {
+        // Bigram
+        if (i + 1 < len && cjkRe.test(str[i + 1])) {
+          var bm = lunr.utils.clone(metadata || {});
+          bm.position = [i, 2];
+          bm.index = idx++;
+          tokens.push(new lunr.Token(str.substring(i, i + 2), bm));
+        }
+        // Unigram
+        var um = lunr.utils.clone(metadata || {});
+        um.position = [i, 1];
+        um.index = idx++;
+        tokens.push(new lunr.Token(str[i], um));
+      } else if (str[i].match(lunr.tokenizer.separator)) {
+        continue;
+      } else {
+        // Non-CJK: accumulate until separator or CJK
+        var start = i;
+        while (i + 1 < len && !cjkRe.test(str[i + 1]) && !str[i + 1].match(lunr.tokenizer.separator)) {
+          i++;
+        }
+        var word = str.substring(start, i + 1);
+        if (word) {
+          var nm = lunr.utils.clone(metadata || {});
+          nm.position = [start, word.length];
+          nm.index = idx++;
+          tokens.push(new lunr.Token(word, nm));
+        }
+      }
+    }
+    return tokens;
+  };
+
+  lunr.tokenizer.separator = /[\s\-/]+/;
+})();
+
 // TOC: build table of contents from page headings
 (function initToc() {
   // Wait for DOM — try theme's onReady, fallback to DOMContentLoaded

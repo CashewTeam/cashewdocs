@@ -9,10 +9,11 @@ body {
   }
 }
 
-// Widen .main to accommodate TOC on large screens
+// Give the reading column a bit more room than the theme default,
+// while keeping the content group anchored instead of drifting right.
 .main.has-toc {
   @include mq(lg) {
-    max-width: calc(#{$content-width} + 16rem);
+    max-width: calc(56rem + 14rem + #{$sp-4});
   }
 }
 
@@ -20,17 +21,17 @@ body {
 .content-with-toc {
   @include mq(lg) {
     display: flex;
+    align-items: flex-start;
     gap: $sp-4;
   }
 }
 
-// Content takes remaining space, capped at original content-width
+// Widen the reading column slightly for large displays.
 .main-content {
   @include mq(lg) {
-    flex: 1 1 auto;
+    flex: 1 1 56rem;
     min-width: 0;
-    // limit width so lines don't get too long when TOC is absent
-    max-width: $content-width;
+    max-width: 56rem;
   }
 }
 

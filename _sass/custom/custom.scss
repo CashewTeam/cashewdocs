@@ -1,15 +1,39 @@
-// custom SCSS (or CSS) goes here
+// Custom SCSS — Table of Contents right sidebar
 
-// TOC sidebar — positioned to the right of content on large screens
+// Widen .main to accommodate TOC on large screens
+.main.has-toc {
+  @include mq(lg) {
+    max-width: calc(#{$content-width} + 16rem);
+  }
+}
+
+// Flex row: content | TOC
+.content-with-toc {
+  @include mq(lg) {
+    display: flex;
+    gap: $sp-4;
+    align-items: flex-start;
+  }
+}
+
+// Content takes remaining space, capped at original content-width
+.main-content {
+  @include mq(lg) {
+    flex: 1 1 auto;
+    min-width: 0;
+    // limit width so lines don't get too long when TOC is absent
+    max-width: $content-width;
+  }
+}
+
+// TOC sidebar — sticky, right side
 .toc-sidebar {
   display: none;
 
   @include mq(lg) {
     display: block;
-    position: absolute;
-    left: calc(100% + #{$sp-6});
-    top: 0;
     width: 14rem;
+    flex-shrink: 0;
   }
 }
 

@@ -16,10 +16,11 @@ layout: table_wrappers
   {% elsif site.nav_enabled != false and layout.nav_enabled == nil and page.nav_enabled == nil %}
     {% include components/sidebar.html %}
   {% endif %}
-  <div class="main" id="top">
+  <div class="main{% if site.toc != false and page.toc != false %} has-toc{% endif %}" id="top">
     {% include components/header.html %}
     <div class="main-content-wrap">
       {% include components/breadcrumbs.html %}
+      <div class="content-with-toc">
       <div id="main-content" class="main-content">
         <main>
           {% if site.heading_anchors != false %}
@@ -34,15 +35,16 @@ layout: table_wrappers
         </main>
         {% include components/footer.html %}
       </div>
-    </div>
-    {% if site.toc != false and page.toc != false %}
-    <aside class="toc-sidebar" aria-label="目录" data-toc-min="{{ site.toc_min_level | default: 2 }}" data-toc-max="{{ site.toc_max_level | default: 4 }}">
-      <div class="toc-sticky">
-        <div class="toc-title">目录</div>
-        <nav id="toc" class="toc-nav"></nav>
+      {% if site.toc != false and page.toc != false %}
+      <aside class="toc-sidebar" aria-label="目录" data-toc-min="{{ site.toc_min_level | default: 2 }}" data-toc-max="{{ site.toc_max_level | default: 4 }}">
+        <div class="toc-sticky">
+          <div class="toc-title">目录</div>
+          <nav id="toc" class="toc-nav"></nav>
+        </div>
+      </aside>
+      {% endif %}
       </div>
-    </aside>
-    {% endif %}
+    </div>
     {% if site.search_enabled != false %}
       {% include components/search_footer.html %}
     {% endif %}

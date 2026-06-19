@@ -64,6 +64,31 @@ docs/
 
 `_config.yml` — 站点标题、颜色方案 (`dark`)、URL、语言 (`zh-CN`)、外部导航链接等。
 
+### 页面目录 (TOC)
+
+大屏幕右侧自动显示当前页面标题目录，由 JavaScript 动态生成。
+
+**全局配置**（`_config.yml`）：
+
+```yaml
+toc: true            # 全局启用/禁用
+toc_min_level: 2     # 最低标题层级（默认 2，即 h2）
+toc_max_level: 4     # 最高标题层级（默认 4，即 h4）
+```
+
+**单页覆盖**（在页面 front matter 中设置）：
+
+```yaml
+---
+title: 示例页面
+toc: false           # 在此页面禁用 TOC
+toc_min_level: 2     # 仅此页面的最低层级
+toc_max_level: 3     # 仅此页面的最高层级
+---
+```
+
+优先级：页面 front matter > `_config.yml` 全局配置 > 默认值（2/4）。
+
 ## 部署
 
 Push 到 `main` 分支后，GitHub Actions 自动构建并部署到 GitHub Pages，无需手动操作。

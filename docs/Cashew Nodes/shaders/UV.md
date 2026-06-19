@@ -3,6 +3,7 @@ title: UV
 date: 2025-07-15 19:00:00 +800
 parent: 着色器节点组
 nav_order: 4
+toc_max_level: 2
 ---
 
 # UV

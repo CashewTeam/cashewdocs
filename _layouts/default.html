@@ -36,7 +36,7 @@ layout: table_wrappers
         {% include components/footer.html %}
       </div>
       {% if site.toc != false and page.toc != false %}
-      <aside class="toc-sidebar" aria-label="目录" data-toc-min="{{ site.toc_min_level | default: 2 }}" data-toc-max="{{ site.toc_max_level | default: 4 }}">
+      <aside class="toc-sidebar" aria-label="目录" data-toc-min="{{ page.toc_min_level | default: site.toc_min_level | default: 2 }}" data-toc-max="{{ page.toc_max_level | default: site.toc_max_level | default: 4 }}">
         <div class="toc-sticky">
           <div class="toc-title">目录</div>
           <nav id="toc" class="toc-nav"></nav>

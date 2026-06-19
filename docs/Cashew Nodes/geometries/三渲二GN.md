@@ -3,6 +3,7 @@ title: 三渲二(几何节点组)
 date: 2025-07-15 19:00:00 +800
 parent: 几何节点组
 nav_order: 1
+toc_max_level: 2
 ---
 
 # 三渲二(几何节点组)

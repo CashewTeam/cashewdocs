@@ -3,6 +3,7 @@ title: 合成器节点组
 date: 2025-07-15 20:50:00 +800
 parent: Cashew Nodes
 nav_order: 3
+toc_max_level: 2
 ---
 # 合成器节点组
 

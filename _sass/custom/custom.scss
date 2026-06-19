@@ -1,1 +1,77 @@
 // custom SCSS (or CSS) goes here
+
+// TOC sidebar
+.content-with-toc {
+  display: flex;
+  gap: $sp-4;
+
+  .main-content {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+.toc-sidebar {
+  display: none;
+
+  @include mq(lg) {
+    display: block;
+    width: 14rem;
+    flex-shrink: 0;
+  }
+}
+
+.toc-sticky {
+  position: sticky;
+  top: $sp-4;
+  max-height: calc(100vh - #{$sp-10});
+  overflow-y: auto;
+}
+
+.toc-title {
+  font-weight: 600;
+  margin-bottom: $sp-2;
+  padding-bottom: $sp-2;
+  border-bottom: $border $border-color;
+  color: $body-heading-color;
+  @include fs-4;
+}
+
+.toc-nav {
+  ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+
+    ul {
+      padding-left: $sp-4;
+    }
+  }
+
+  li {
+    margin: 0;
+  }
+
+  a {
+    display: block;
+    padding: $sp-2 $sp-3;
+    font-size: $font-size-3;
+    color: $body-text-color;
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    transition: color $transition-duration, border-color $transition-duration, background-color $transition-duration;
+
+    &:hover {
+      color: $link-color;
+      border-left-color: $border-color;
+      background-color: rgba($link-color, 0.05);
+    }
+
+    &.active {
+      color: $link-color;
+      border-left-color: $link-color;
+      font-weight: 500;
+      background-color: rgba($link-color, 0.08);
+    }
+  }
+}

@@ -1,51 +1,55 @@
-// Chinese search: custom Lunr tokenizer with bigram support
+// Chinese search: override Lunr tokenizer with CJK bigram support
 (function() {
   if (typeof lunr === 'undefined') return;
 
+  var origTokenizer = lunr.tokenizer;
+  var cjkRe = /[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]/;
+
   lunr.tokenizer = function(obj, metadata) {
     if (obj == null || obj == undefined) return [];
-    if (Array.isArray(obj)) {
-      return obj.map(function(t) {
-        return new lunr.Token(lunr.utils.asString(t).toLowerCase(), lunr.utils.clone(metadata || {}));
-      });
-    }
+    if (Array.isArray(obj)) return origTokenizer(obj, metadata);
 
     var str = obj.toString().toLowerCase();
     var len = str.length;
     if (len === 0) return [];
 
+    // No CJK characters: use original tokenizer (English search untouched)
+    if (!cjkRe.test(str)) return origTokenizer(obj, metadata);
+
+    // Has CJK: custom bigram tokenization
     var tokens = [];
     var idx = 0;
-    var cjkRe = /[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]/;
+    var sepRe = lunr.tokenizer.separator || /[\s\-/]+/;
 
     for (var i = 0; i < len; i++) {
-      if (cjkRe.test(str[i])) {
-        // Bigram
+      var ch = str[i];
+      if (cjkRe.test(ch)) {
+        // Bigram (overlapping 2-char)
         if (i + 1 < len && cjkRe.test(str[i + 1])) {
-          var bm = lunr.utils.clone(metadata || {});
+          var bm = {};
           bm.position = [i, 2];
           bm.index = idx++;
           tokens.push(new lunr.Token(str.substring(i, i + 2), bm));
         }
-        // Unigram
-        var um = lunr.utils.clone(metadata || {});
+        // Unigram (single char)
+        var um = {};
         um.position = [i, 1];
         um.index = idx++;
-        tokens.push(new lunr.Token(str[i], um));
-      } else if (str[i].match(lunr.tokenizer.separator)) {
+        tokens.push(new lunr.Token(ch, um));
+      } else if (sepRe.test(ch)) {
         continue;
       } else {
-        // Non-CJK: accumulate until separator or CJK
+        // Non-CJK, non-separator: accumulate word
         var start = i;
-        while (i + 1 < len && !cjkRe.test(str[i + 1]) && !str[i + 1].match(lunr.tokenizer.separator)) {
+        while (i + 1 < len && !cjkRe.test(str[i + 1]) && !sepRe.test(str[i + 1])) {
           i++;
         }
         var word = str.substring(start, i + 1);
         if (word) {
-          var nm = lunr.utils.clone(metadata || {});
-          nm.position = [start, word.length];
-          nm.index = idx++;
-          tokens.push(new lunr.Token(word, nm));
+          var wm = {};
+          wm.position = [start, word.length];
+          wm.index = idx++;
+          tokens.push(new lunr.Token(word, wm));
         }
       }
     }

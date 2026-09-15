@@ -39,63 +39,6 @@ REST API（Representational State Transfer Application Programming Interface，�
 
 下面是完整示例代码，后续各节会解释其中的各个部分。
 
-运行示例代码需要安装 requests 软件包：
-
-运行示例：
-
-请根据 API 设置替换用户名和密码。
-
----
-
-## **获取可用语音库**
-
-可以按以下方式获取已安装语音库的列表：
-
-输出示例：
-
-如果编辑器中没有下载任何语音库，结果将为空。
-
----
-
-## **合成语音**
-
-以下代码会向 API 服务器发送语音合成请求：
-
-示例代码使用获取到的列表中的第一个语音库进行合成。
-
-合成完成后，你会听到“こんにちは”通过默认音频设备播放。
-
-请注意，服务器对请求数量有限制。达到上限后，请求可能失败。将 `force_enqueue` 设置为 true 会自动删除较早的请求，为新请求腾出空间。
-
-可以使用执行 synthesize_text 函数获得的 UUID 检查已提交请求的状态。
-
-如果 `state` 为 `queued`，表示请求正在等待处理；如果为 `succeeded`，表示合成已成功完成。
-
-也可以指定请求的 UUID 删除请求：
-
-如需将合成结果保存为文件而不是播放，请指定绝对路径：
-
----
-
-## **控制声音表现力**
-
-如需改变声音表现力，请加入一个 `global_parameters` 对象。例如，要将语速加倍：
-
----
-
-## **精细控制语音属性**
-
-可以修改分析后的文本数据来进行精细控制。首先发送文本分析请求：
-
-响应示例：
-
-修改分析后的文本并将其发送回服务器，可以调整重音和发音。下面是使用 XML 解析器的示例。
-
-详情请通过 VoiSona Talk 编辑器 Preferences 窗口中 API 标签页的链接，参阅“Talk API Reference”。
-
----
-## 示例代码
-
 ```python
 import argparse
 import json
@@ -246,13 +189,25 @@ except Exception as e:
     print(e)
 ```
 
+运行示例代码需要安装 requests 软件包：
+
 ```bash
 pip install requests
 ```
 
+运行示例：
+
 ```bash
 python sample.py --user hoge@example.com --password 1234
 ```
+
+请根据 API 设置替换用户名和密码。
+
+---
+
+## **获取可用语音库**
+
+可以按以下方式获取已安装语音库的列表：
 
 ```python
 auth = (args.user, args.password)
@@ -265,6 +220,8 @@ def get_voice_libraries():
     print(json.dumps(voice_libraries, indent=2, ensure_ascii=False))
     return voice_libraries
 ```
+
+输出示例：
 
 ```json
 [
@@ -288,6 +245,14 @@ def get_voice_libraries():
 ]
 ```
 
+如果编辑器中没有下载任何语音库，结果将为空。
+
+---
+
+## **合成语音**
+
+以下代码会向 API 服务器发送语音合成请求：
+
 ```python
 def synthesize_text(voice_library):
     payload = {
@@ -303,6 +268,14 @@ def synthesize_text(voice_library):
     print("Request sent successfully.")
     return uuid
 ```
+
+示例代码使用获取到的列表中的第一个语音库进行合成。
+
+合成完成后，你会听到“こんにちは”通过默认音频设备播放。
+
+请注意，服务器对请求数量有限制。达到上限后，请求可能失败。将 `force_enqueue` 设置为 true 会自动删除较早的请求，为新请求腾出空间。
+
+可以使用执行 synthesize_text 函数获得的 UUID 检查已提交请求的状态。
 
 ```python
 def check_status(uuid, timeout=30):
@@ -320,12 +293,18 @@ def check_status(uuid, timeout=30):
     return response
 ```
 
+如果 `state` 为 `queued`，表示请求正在等待处理；如果为 `succeeded`，表示合成已成功完成。
+
+也可以指定请求的 UUID 删除请求：
+
 ```python
 def delete_request(uuid):
     response = requests.delete(base_url + "speech-syntheses/" + uuid, auth=auth)
     response.raise_for_status()
     print("Request deleted successfully.")
 ```
+
+如需将合成结果保存为文件而不是播放，请指定绝对路径：
 
 ```python
 def synthesize_text_and_save(voice_library):
@@ -342,6 +321,12 @@ def synthesize_text_and_save(voice_library):
     response.raise_for_status()
     print("Request sent successfully.")
 ```
+
+---
+
+## **控制声音表现力**
+
+如需改变声音表现力，请加入一个 `global_parameters` 对象。例如，要将语速加倍：
 
 ```python
 def synthesize_text_with_global_parameters(voice_library):
@@ -365,6 +350,12 @@ def synthesize_text_with_global_parameters(voice_library):
     print("Request sent successfully.")
 ```
 
+---
+
+## **精细控制语音属性**
+
+可以修改分析后的文本数据来进行精细控制。首先发送文本分析请求：
+
 ```python
 def analyze_text():
     payload = {
@@ -380,10 +371,14 @@ def analyze_text():
     return analyzed_text
 ```
 
+响应示例：
+
 ```xml
 <tsml><acoustic_phrase><word chain="0" hl="lhhhh" original="こんにちは" phoneme="k,o|N|n,i|ch,i|w,a" pos="感動詞" pronunciation="コ
 ンニチワ">こんにちは</word></acoustic_phrase></tsml>
 ```
+
+修改分析后的文本并将其发送回服务器，可以调整重音和发音。下面是使用 XML 解析器的示例。
 
 ```python
 def synthesize_text_with_analyzed_text(voice_library, analyzed_text):
@@ -403,6 +398,10 @@ def synthesize_text_with_analyzed_text(voice_library, analyzed_text):
     response.raise_for_status()
     print("Request sent successfully.")
 ```
+
+详情请通过 VoiSona Talk 编辑器 Preferences 窗口中 API 标签页的链接，参阅“Talk API Reference”。
+
+---
 
 
 

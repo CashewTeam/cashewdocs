@@ -15,6 +15,7 @@ nav_order: 1
   - [Blender 几何节点资产推荐](https://docs.cashewteam.top/docs/Blender/2024-09-30-blender-gn.html)
   - [Blender 常用插件推荐](https://docs.cashewteam.top/docs/Blender/2024-09-30-blender-plugins.html)
  - [Cashew Nodes](https://docs.cashewteam.top/docs/Cashew%20Nodes/)
+ - [VoiSona Talk 中文手册](docs/VoiSona%20Talk/)
  - [几何节点中文字典](https://blendercz.top/)
  - [Blender 官方文档](https://docs.blender.org/manual/zh-hans/latest/)
  - [月离文档库](https://docs.yuelili.com/#/)
